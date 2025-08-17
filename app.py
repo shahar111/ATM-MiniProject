@@ -36,5 +36,21 @@ def deposit(account_number):
         return jsonify({"error": str(e)}), 400
 
 
+@app.route('/accounts/<account_number>/withdraw', methods=['POST'])
+def withdraw(account_number):
+    account = accounts.get(account_number)
+    if not account:
+        account = Account(account_number, 0)
+        accounts[account_number] = account
+
+    data = request.get_json()
+    amount = data.get("amount", 0)
+    try:
+        new_balance = account.withdraw(amount)
+        return jsonify({"account_number": account_number, "balance": new_balance})
+    except ValueError as e:
+        return jsonify({"error": str(e)}), 400
+
+
 if __name__ == "__main__":
     app.run(debug=True)
