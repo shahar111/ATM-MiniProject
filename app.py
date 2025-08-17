@@ -11,6 +11,7 @@ accounts = {
 }
 
 
+# --- GET BALANCE ---
 @app.route('/accounts/<account_number>/balance')
 def get_balance(account_number):
     account = accounts.get(account_number)
@@ -20,6 +21,7 @@ def get_balance(account_number):
     return jsonify({"account_number": account_number, "balance": account.get_balance()})
 
 
+# --- DEPOSIT ---
 @app.route('/accounts/<account_number>/deposit', methods=['POST'])
 def deposit(account_number):
     account = accounts.get(account_number)
@@ -28,6 +30,9 @@ def deposit(account_number):
         accounts[account_number] = account
 
     data = request.get_json()
+    if not data or "amount" not in data:
+        return jsonify({"error": "Missing 'amount' in request"}), 400
+
     amount = data.get("amount", 0)
     try:
         new_balance = account.deposit(amount)
@@ -36,14 +41,17 @@ def deposit(account_number):
         return jsonify({"error": str(e)}), 400
 
 
+# --- WITHDRAW ---
 @app.route('/accounts/<account_number>/withdraw', methods=['POST'])
 def withdraw(account_number):
     account = accounts.get(account_number)
     if not account:
-        account = Account(account_number, 0)
-        accounts[account_number] = account
+        return jsonify({"error": "Account not found"}), 404
 
     data = request.get_json()
+    if not data or "amount" not in data:
+        return jsonify({"error": "Missing 'amount' in request"}), 400
+
     amount = data.get("amount", 0)
     try:
         new_balance = account.withdraw(amount)
