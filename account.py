@@ -35,12 +35,19 @@ class Account:
 
     @staticmethod
     def create(account_number, balance=0):
-        conn = sqlite3.connect(Account.DB_NAME)
-        c = conn.cursor()
-        c.execute("INSERT INTO accounts (account_number, balance) VALUES (?, ?)", (account_number, balance))
-        conn.commit()
-        conn.close()
-        return Account(account_number, balance)
+        if not isinstance(account_number, int) or account_number <= 0:
+            raise ValueError("Account number must be a positive integer")
+        if not isinstance(balance, (int, float)):
+            raise ValueError("Amount must be numeric")
+        if balance < 0:
+            raise ValueError("Initial amount cannot be negative")
+
+        try:
+            with sqlite3.connect(Account.DB_NAME) as conn:
+                conn.execute("INSERT INTO accounts VALUES (?, ?)", (account_number, balance))
+            return Account(account_number, balance)
+        except sqlite3.IntegrityError:
+            raise ValueError(f"Account {account_number} already exists")
 
     def deposit(self, amount):
         if amount <= 0:
