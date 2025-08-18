@@ -31,9 +31,8 @@ Each account is uniquely identified by an account number.
 - I didn't know how to test the application.
 
 ### Assumptions
-- If the call withdraw or deposit has a negative amount, return an error.
-- If the user attempts to deposit/get-balance on an unexisting account, the databse create the new account ith initial balance of 0.
-- If the user attempts to withdraw on an unexisting account, return error.
+- For withdrawals on a non-existing account you return an error.
+- For deposit or balance check on a non-existing account, it auto-creates the account.
   
 ---
 
@@ -85,8 +84,8 @@ GET /accounts/<account_number>/balance
 ## Deployment
 The server is hosted on Render at:
 https://atm-miniproject.onrender.com/
+It may take 1–2 minutes for the server to respond on first load, refreshing the page can help.
 
 Notes
 Flask runs with host="0.0.0.0" and port 5000.
 
-The root URL (/) currently shows "Not Found"; the API is intended for programmatic access via endpoints.
