@@ -14,7 +14,7 @@ class Account:
         c = conn.cursor()
         c.execute('''
             CREATE TABLE IF NOT EXISTS accounts (
-                account_number INT PRIMARY KEY,
+                account_number TEXT PRIMARY KEY,
                 balance REAL
             )
         ''')
