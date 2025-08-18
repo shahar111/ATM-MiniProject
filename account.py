@@ -1,20 +1,20 @@
 import sqlite3
 
-DB_NAME = "atm.db"
-
 
 class Account:
+    DB_NAME = "atm.db"
+
     def __init__(self, account_number, balance=0):
         self.account_number = account_number
         self.balance = balance
 
     @staticmethod
     def initialize_db():
-        conn = sqlite3.connect(DB_NAME)
+        conn = sqlite3.connect(Account.DB_NAME)
         c = conn.cursor()
         c.execute('''
             CREATE TABLE IF NOT EXISTS accounts (
-                account_number TEXT PRIMARY KEY,
+                account_number INT PRIMARY KEY,
                 balance REAL
             )
         ''')
@@ -23,7 +23,7 @@ class Account:
 
     @staticmethod
     def get(account_number):
-        conn = sqlite3.connect(DB_NAME)
+        conn = sqlite3.connect(Account.DB_NAME)
         c = conn.cursor()
         c.execute("SELECT balance FROM accounts WHERE account_number = ?", (account_number,))
         row = c.fetchone()
@@ -35,7 +35,7 @@ class Account:
 
     @staticmethod
     def create(account_number, balance=0):
-        conn = sqlite3.connect(DB_NAME)
+        conn = sqlite3.connect(Account.DB_NAME)
         c = conn.cursor()
         c.execute("INSERT INTO accounts (account_number, balance) VALUES (?, ?)", (account_number, balance))
         conn.commit()
@@ -59,7 +59,7 @@ class Account:
         return self.balance
 
     def _update_db(self):
-        conn = sqlite3.connect(DB_NAME)
+        conn = sqlite3.connect(Account.DB_NAME)
         c = conn.cursor()
         c.execute("UPDATE accounts SET balance = ? WHERE account_number = ?", (self.balance, self.account_number))
         conn.commit()
