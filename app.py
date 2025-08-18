@@ -6,13 +6,6 @@ app = Flask(__name__)
 Account.initialize_db()
 
 
-# examples
-accounts = {
-    "123": Account("123", 100),
-    "456": Account("456", 200)
-}
-
-
 # --- GET BALANCE ---
 @app.route('/accounts/<account_number>/balance')
 def get_balance(account_number):
@@ -61,4 +54,6 @@ def withdraw(account_number):
 
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    # app.run(debug=True)
+    app.run(host="0.0.0.0", port=5000)
+
